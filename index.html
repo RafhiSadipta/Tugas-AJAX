@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kabar Cuaca</title>
+    <style>
+        /* CSS untuk mengatur tampilan tabel */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            display: none;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Kabar Cuaca</h1>
+    <div id="weather-info">
+        <!-- Form input untuk lokasi -->
+        <form id="location-form">
+            <label for="location">Masukkan Lokasi:</label>
+            <input type="text" id="location" name="location" required>
+            <button type="submit">Get Weather</button>
+        </form>
+        <table id="weather-table">
+            <tr>
+                <th>Informasi Cuaca</th>
+                <th>Nilai</th>
+            </tr>
+            <tr>
+                <td>Last Updated</td>
+                <td id="last-updated"></td>
+            </tr>
+            <tr>
+                <td>Temperatur (°C)</td>
+                <td id="temp-c"></td>
+            </tr>
+            <tr>
+                <td>Humidity</td>
+                <td id="humidity"></td>
+            </tr>
+            <tr>
+                <td>Wind (mph)</td>
+                <td id="wind-mph"></td>
+            </tr>
+            <tr>
+                <td>Cloud</td>
+                <td id="cloud"></td>
+            </tr>
+            <!-- Tambahkan baris-baris lain sesuai dengan data cuaca yang Anda ingin tampilkan -->
+        </table>
+    </div>
+    <script>
+        const apiKey = '434c4e50a7c548eaaae15234230310'; // Gantilah dengan API key yang benar
+        const locationForm = document.getElementById('location-form');
+        const weatherTable = document.getElementById('weather-table');
+
+        // Fungsi untuk mengambil data cuaca dari API berdasarkan lokasi yang dimasukkan pengguna
+        function fetchData(location) {
+            const apiUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`;
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Panggil fungsi updateWeatherInfo untuk mengisi data cuaca ke dalam tabel
+                    updateWeatherInfo(data.current);
+                })
+                .catch(error => {
+                    console.error("Gagal mengambil data cuaca:", error);
+                });
+        }
+
+        // Fungsi untuk mengisi data cuaca ke dalam tabel
+        function updateWeatherInfo(data) {
+            document.getElementById("last-updated").textContent = data.last_updated;
+            document.getElementById("temp-c").textContent = data.temp_c;
+            document.getElementById("humidity").textContent = data.humidity;
+            document.getElementById("wind-mph").textContent = data.wind_mph;
+            document.getElementById("cloud").textContent = data.cloud;
+            weatherTable.style.display = "table";
+            // Tambahkan kode untuk mengisi baris-baris lain sesuai dengan data cuaca yang Anda inginkan
+        }
+
+        // Event listener untuk mengambil data cuaca saat form disubmit
+        locationForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // Mencegah form dikirim (halaman tidak akan diperbarui)
+            const locationInput = document.getElementById('location');
+            const location = locationInput.value;
+            fetchData(location);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Di sini Anda dapat melakukan inisialisasi atau tindakan lain yang diperlukan saat halaman dimuat
+        });
+    </script>
+</body>
+
+</html>
